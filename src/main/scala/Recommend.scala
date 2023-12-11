@@ -28,9 +28,9 @@ object MovieRecommendation {
     configureLogger()
 
     println("----------Setting Up Data Path----------")
-    val dataPath = "hdfs://localhost:9000/user/caihao/movie/u.item" // HDFS
-    val modelPath = "hdfs://localhost:9000/user/caihao/movie/ALSmodel" // HDFS
-    val checkpointPath = "hdfs://localhost:9000/user/caihao/checkpoint/" // HDFS
+    val dataPath = "hdfs://localhost:9000/user/shril/movie/u.item" // HDFS
+    val modelPath = "hdfs://localhost:9000/user/shril/movie/ALSmodel" // HDFS
+    val checkpointPath = "hdfs://localhost:9000/user/shril/checkpoint/" // HDFS
     sparkContext.setCheckpointDir(checkpointPath) // checkpoint directory (to avoid stackoverflow error)
 
     println("---------Preparing Data---------")
