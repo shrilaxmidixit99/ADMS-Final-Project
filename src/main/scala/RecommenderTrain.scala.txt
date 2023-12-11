@@ -1,0 +1,68 @@
+import org.apache.log4j.{Level, Logger}
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rating}
+
+object MovieRecommenderTrainer {
+  def main(args: Array[String]): Unit={
+    println("---------Initializing Spark-----------")
+    val sparkConfiguration = new SparkConf()
+      .setAppName("MovieRecommenderTrainer")
+//      .setMaster("local")
+    val sparkContext = new SparkContext(sparkConfiguration)
+    println("master=" + sparkContext.master)
+
+    println("----------Setting Up Logger----------")
+    configureLogger()
+
+    println("----------Setting up data path----------")
+    val dataPath = "hdfs://localhost:9000/user/caihao/movie/u.data" // HDFS
+    val modelPath = "hdfs://localhost:9000/user/caihao/movie/ALSmodel" // HDFS
+    val checkpointPath = "hdfs://localhost:9000/user/caihao/checkpoint/" // HDFS
+    sparkContext.setCheckpointDir(checkpointPath) // checkpoint directory (to avoid stackoverflow error)
+
+    println("---------Preparing Data---------")
+    val ratingsRDD: RDD[Rating] = prepareData(sparkContext, dataPath)
+    ratingsRDD.checkpoint() // checkpoint data to avoid stackoverflow error
+
+    println("---------Training---------")
+    println("Start ALS training, rank=5, iteration=20, lambda=0.1")
+    val trainedModel: MatrixFactorizationModel = trainModel(ratingsRDD, 5, 20, 0.1)
+
+    println("----------Saving Model---------")
+    saveTrainedModel(sparkContext, trainedModel, modelPath)
+    sparkContext.stop()
+  }
+
+  def configureLogger(): Unit ={
+    Logger.getLogger("org").setLevel(Level.ERROR)
+    Logger.getLogger("akka").setLevel(Level.ERROR)
+  }
+
+  def prepareData(sparkContext: SparkContext, dataPath:String): RDD[Rating] ={
+    // reads data from dataPath into Spark RDD.
+    val file: RDD[String] = sparkContext.textFile(dataPath)
+    // only takes in first three fields (userID, itemID, rating).
+    val ratingsRDD: RDD[Rating] = file.map(line => line.split("\t") match {
+      case Array(user, item, rate, _) => Rating(user.toInt, item.toInt, rate.toDouble)
+    })
+    println(ratingsRDD.first()) // Rating(196,242,3.0)
+    // return processed data as Spark RDD
+    ratingsRDD
+  }
+
+  def trainModel(ratingsRDD: RDD[Rating], rank: Int, iterations: Int, lambda: Double): MatrixFactorizationModel ={
+    ALS.train(ratingsRDD, rank, iterations, lambda)
+  }
+
+  def saveTrainedModel(context: SparkContext, model:MatrixFactorizationModel, modelPath: String): Unit ={
+    try {
+      model.save(context, modelPath)
+    }
+    catch {
+      case e: Exception => println("Error Happened when saving model!!!")
+    }
+    finally {
+    }
+  }
+}
