@@ -99,7 +99,7 @@ $ start-all.sh
 ```
 Then we need to upload ml-100k dataset to Hadoop HDFS:
 ```
-$ hadoop fs -put ~/Downloads/ml-100k /user/caihao/movie
+$ hadoop fs -put ~/Downloads/ml-100k /user/shril/movie
 ```
 
 ### 4.3 Train recommendataion model in Spark
@@ -109,7 +109,7 @@ $ spark-submit --driver-memory 512m --executor-cores 2 --class RecommenderTrain 
 ```
 Check out your trained model in HDFS using:
 ```
-$ hadoop fs -ls -h /user/caihao/movie
+$ hadoop fs -ls -h /user/shril/movie
 ```
 You will see your model here:
 <p align="center">
