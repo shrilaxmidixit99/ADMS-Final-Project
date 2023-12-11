@@ -1,8 +1,3 @@
-![](imgs/banner.jpg)
-*(Photo by <a href="https://unsplash.com/@tysonmoultrie?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Tyson Moultrie</a> on <a href="https://unsplash.com/s/photos/movie?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>)</p>*
-
-***This repo contains the source code for [my article](https://towardsdatascience.com/build-recommendation-system-using-scala-spark-and-hadoop-d2ee35c97d3c) published on [Towards Data Science](https://towardsdatascience.com).***
-
 # A movie recommendation system built using Scala, Spark and Hadoop
 
 ## Table of Contents
@@ -237,13 +232,3 @@ val recommendP = model.recommendProducts(user=inputUserID, num=10)
 ```
 val recommendU = model.recommendUsers(product=inputMovieID, num=10)
 ```
-
-## 8. Summary
-And there you go, we have built a recommendataion system using Scala + Spark + Hadoop (with PySpark + Databricks), Congratualations! I hope you found this post useful.
-
-## Contact
-* **Author**: Hao Cai
-* **Email**: [haocai3@gmail.com](haocai3@gmail.com)
-* **Github**: [https://github.com/haocai1992](https://github.com/haocai1992)
-* **Linkedin**: [https://www.linkedin.com/in/haocai1992/](https://www.linkedin.com/in/haocai1992/)
-
